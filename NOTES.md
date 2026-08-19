@@ -104,3 +104,127 @@ and DialogDescription.
 
 This makes the dialog easier to compose and reuse in different application
 screens.
+
+# 2. Tabs
+## My handwritten implementation
+
+My handwritten Tabs component manually implemented the required keyboard and
+accessibility behavior.
+
+It handled:
+
+role="tablist"
+role="tab"
+role="tabpanel"
+aria-selected
+aria-controls
+aria-labelledby
+Roving tabIndex
+ArrowRight and ArrowLeft
+Home and End
+Wrapping between the first and last tabs
+Automatic activation
+Moving focus when the selected tab changes
+
+The component used React state to keep the selected tab synchronized with
+the visible panel.
+
+## What shadcn/Radix provides
+
+The shadcn Tabs component is built using Radix Tabs primitives such as:
+
+Tabs
+TabsList
+TabsTrigger
+TabsContent
+
+The shadcn source mainly provides a styled and reusable wrapper around these
+primitives, while Radix handles the underlying Tabs behavior.
+
+## Concrete gaps I found
+
+### Gap 1 — Manual keyboard and focus behavior
+
+My handwritten Tabs manually implemented roving tabindex, arrow-key
+navigation, Home/End navigation, automatic activation, and focus movement.
+
+With shadcn/Radix, this behavior is provided by the underlying Tabs primitive.
+
+Therefore, shadcn/Radix reduces the amount of accessibility-sensitive
+keyboard and focus-management code that I have to maintain myself.
+
+### Gap 2 — Composition
+
+My handwritten Tabs uses a specific data-driven structure for its tab items.
+
+The shadcn implementation exposes separate components:
+```
+<Tabs>
+  <TabsList>
+    <TabsTrigger value="account">
+      Account
+    </TabsTrigger>
+
+
+    <TabsTrigger value="settings">
+      Settings
+    </TabsTrigger>
+  </TabsList>
+
+
+  <TabsContent value="account">
+    ...
+  </TabsContent>
+
+
+  <TabsContent value="settings">
+    ...
+  </TabsContent>
+</Tabs>
+```
+
+This makes the shadcn version more composable because application code can
+place arbitrary React content inside each tab panel without changing the
+Tabs component itself.
+
+### Gap 3 — Styling and variants
+
+My handwritten Tabs has styling designed specifically for my playground.
+
+The shadcn implementation adds a reusable styling layer using utilities such
+as cn and supports component variants.
+
+This makes the generated component easier to adapt to different visual
+designs without rewriting its structure or behavior.
+
+# 3. Disclosure
+My handwritten implementation
+
+The Disclosure was intentionally much simpler than Modal and Tabs.
+
+I used:
+
+1. A native <button>
+2. aria-expanded
+3. aria-controls
+4. A stable content id
+5. The native hidden attribute
+6. A single piece of React state
+
+I did not add custom keyboard handlers because a native button already
+supports Enter and Space.
+
+I also did not move focus when opening or closing the disclosure because focus
+correctly remains on the trigger.
+
+## Comparison with shadcn
+
+The assignment only required shadcn Dialog and Tabs to be added and inspected.
+Therefore, I did not replace my handwritten Disclosure with a shadcn
+implementation.
+
+The Disclosure was already relatively small and relied heavily on native
+browser behavior.
+
+This helped me understand that a component library is not automatically
+necessary for every interactive component.
